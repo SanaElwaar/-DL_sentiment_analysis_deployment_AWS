@@ -14471,7 +14471,7 @@ Billable seconds: 288
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Deploy the trained model</span>
@@ -14494,6 +14494,7 @@ Billable seconds: 288
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>Parameter image will be renamed to image_uri in SageMaker Python SDK v2.
 &#39;create_image_uri&#39; will be deprecated in favor of &#39;ImageURIProvider&#39; class in SageMaker Python SDK v2.
+Using already existing model: sagemaker-pytorch-2021-10-06-10-04-00-308
 </pre>
 </div>
 </div>
@@ -14504,7 +14505,7 @@ Billable seconds: 288
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------!</pre>
+<pre>----</pre>
 </div>
 </div>
 
@@ -14674,12 +14675,18 @@ This model is slightly better in terms of accuracy, 82% vs 78% for XGBOOST. Fund
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Convert test_review into a form usable by the model and save the results in test_data</span>
-<span class="n">test_data</span> <span class="o">=</span> <span class="n">convert_and_pad</span><span class="p">(</span><span class="n">word_dict</span><span class="p">,</span> <span class="n">review_to_words</span><span class="p">(</span><span class="n">test_review</span><span class="p">),</span> <span class="n">pad</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
-<span class="n">test_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="mi">500</span><span class="p">]]</span>
+
+<span class="n">test_data_int</span><span class="p">,</span> <span class="n">len_test</span>  <span class="o">=</span> <span class="n">convert_and_pad</span><span class="p">(</span><span class="n">word_dict</span><span class="p">,</span> <span class="n">review_to_words</span><span class="p">(</span><span class="n">test_review</span><span class="p">))</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">len_test</span><span class="p">]</span> <span class="o">+</span> <span class="n">test_data_int</span><span class="p">)])</span>
+<span class="c1"># Or exactly like in predict_fn</span>
+
+<span class="n">test_data_int</span><span class="p">,</span> <span class="n">len_test</span>  <span class="o">=</span> <span class="n">convert_and_pad</span><span class="p">(</span><span class="n">word_dict</span><span class="p">,</span> <span class="n">review_to_words</span><span class="p">(</span><span class="n">test_review</span><span class="p">))</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">len_test</span><span class="p">,</span> <span class="n">test_data_int</span><span class="p">))</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14697,7 +14704,7 @@ This model is slightly better in terms of accuracy, 82% vs 78% for XGBOOST. Fund
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">estimator_predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
@@ -14713,13 +14720,13 @@ This model is slightly better in terms of accuracy, 82% vs 78% for XGBOOST. Fund
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[37]:</div>
+    <div class="prompt output_prompt">Out[62]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array(0.7439713, dtype=float32)</pre>
+<pre>array(0.70154196, dtype=float32)</pre>
 </div>
 
 </div>
@@ -14778,7 +14785,7 @@ This model is slightly better in terms of accuracy, 82% vs 78% for XGBOOST. Fund
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pygmentize serve/predict.py
@@ -14872,7 +14879,6 @@ This model is slightly better in terms of accuracy, 82% vs 78% for XGBOOST. Fund
 
     <span class="ansi-white-fg">#data_X , data_len = convert_and_pad_data(model.word_dict, input_data)</span>
     data_X , data_len = convert_and_pad(model.word_dict, review_to_words(input_data))
-    data_X= data_X[:<span class="ansi-blue-fg">500</span>]
     
     <span class="ansi-white-fg"># Using data_X and data_len we construct an appropriate input tensor. Remember</span>
     <span class="ansi-white-fg"># that our model expects input data of the form &#39;len, review[500]&#39;.</span>
@@ -15317,4 +15323,3 @@ Starting  neg  files
 
 
 </html>
-
